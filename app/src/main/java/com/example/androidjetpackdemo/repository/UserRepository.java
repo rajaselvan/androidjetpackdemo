@@ -1,47 +1,44 @@
 package com.example.androidjetpackdemo.repository;
 
-import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.os.AsyncTask;
+import android.arch.paging.DataSource;
+import android.arch.paging.LivePagedListBuilder;
+import android.arch.paging.PagedList;
 
-import com.example.androidjetpackdemo.db.UserDao;
-import com.example.androidjetpackdemo.db.UserDataBase;
+import com.example.androidjetpackdemo.api.Webservice;
+import com.example.androidjetpackdemo.db.UserLocalCache;
+import com.example.androidjetpackdemo.model.GetUsersResult;
 import com.example.androidjetpackdemo.model.User;
 
-import java.util.List;
 
 public class UserRepository {
 
-    private UserDao mUserDao;
-    private LiveData<List<User>> mUsers;
+    private static final int DATABASE_PAGE_SIZE = 3;
+    private Webservice webservice;
+    private UserLocalCache localCache;
 
-    UserRepository(Application application) {
-        UserDataBase db = UserDataBase.getInstance(application);
-        mUserDao = db.userDao();
-        mUsers = mUserDao.getAllUsers();
-    }
-
-    LiveData<List<User>> getAllUsers() {
-        return mUsers;
+    public UserRepository(Webservice webservice, UserLocalCache localCache) {
+        this.webservice = webservice;
+        this.localCache = localCache;
     }
 
 
-    public void insertUsers (List<User> users) {
-        new insertAsyncTask(mUserDao).execute(users);
-    }
+    public GetUsersResult getUsers() {
 
-    private static class insertAsyncTask extends AsyncTask<List<User>, Void, Void> {
+        DataSource.Factory<Integer, User> usersList = localCache.getUsers();
 
-        private UserDao mAsyncTaskDao;
+        UserListBoundaryCallback boundaryCallback = new UserListBoundaryCallback(webservice, localCache);
 
-        insertAsyncTask(UserDao dao) {
-            mAsyncTaskDao = dao;
-        }
+        LiveData<String> networkErrors = boundaryCallback.getNetworkErrors();
 
-        @Override
-        protected Void doInBackground(final List<User>... params) {
-            mAsyncTaskDao.insertAll(params[0]);
-            return null;
-        }
+        PagedList.Config pagedConfig = new PagedList.Config.Builder()
+                .setPageSize(DATABASE_PAGE_SIZE)
+                .build();
+
+        LiveData<PagedList<User>> data = new LivePagedListBuilder<>(usersList, pagedConfig)
+                .setBoundaryCallback(boundaryCallback)
+                .build();
+
+        return new GetUsersResult(data, networkErrors);
     }
 }

@@ -8,18 +8,18 @@ import java.util.List;
 public class GetUsersListResponse {
 
     @SerializedName("page")
-    private Integer page;
+    public Integer page;
 
     @SerializedName("per_page")
-    private Integer perPage;
+    public Integer perPage;
 
     @SerializedName("total")
-    private Integer total;
+    public Integer total;
 
     @SerializedName("total_pages")
-    private Integer totalPages;
+    public Integer totalPages;
 
     @SerializedName("data")
-    private List<User> usersList = null;
+    public List<User> usersList = null;
 
 }

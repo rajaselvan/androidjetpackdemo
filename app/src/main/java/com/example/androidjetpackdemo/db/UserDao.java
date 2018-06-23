@@ -1,6 +1,6 @@
 package com.example.androidjetpackdemo.db;
 
-import android.arch.lifecycle.LiveData;
+import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
@@ -17,6 +17,6 @@ public interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<User> users);
 
-    @Query("SELECT * FROM users")
-    LiveData<List<User>> getAllUsers();
+    @Query("SELECT * FROM users ORDER BY id ASC")
+    DataSource.Factory<Integer, User> getAllUsers();
 }
