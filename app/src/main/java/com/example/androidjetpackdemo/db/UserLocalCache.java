@@ -4,6 +4,7 @@ import android.arch.paging.DataSource;
 
 import com.example.androidjetpackdemo.model.User;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -29,5 +30,15 @@ public class UserLocalCache {
 
     public DataSource.Factory<Integer, User> getUsers() {
         return mUserDao.getAllUsers();
+    }
+
+    public List<User> getOutdatedUsers(Date lastRefreshMax){
+        return mUserDao.getOutdatedUsers(lastRefreshMax);
+    }
+
+    public void clearCache(){
+        ioExecutor.execute( () -> {
+            mUserDao.deleteAll();
+        });
     }
 }

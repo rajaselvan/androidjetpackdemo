@@ -22,7 +22,7 @@ public class Injection {
 
     @NonNull
     private static UserRepository provideWebSeriveClient(Context context) {
-        return new UserRepository(WebserviceClient.create(), provideCache(context));
+        return new UserRepository(WebserviceClient.create(), provideCache(context), Executors.newSingleThreadExecutor());
     }
 
 

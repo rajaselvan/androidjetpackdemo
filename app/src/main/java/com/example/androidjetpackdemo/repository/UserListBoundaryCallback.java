@@ -11,6 +11,8 @@ import com.example.androidjetpackdemo.api.WebserviceClient;
 import com.example.androidjetpackdemo.db.UserLocalCache;
 import com.example.androidjetpackdemo.model.User;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class UserListBoundaryCallback extends PagedList.BoundaryCallback<User> implements ApiCallback {
@@ -53,8 +55,16 @@ public class UserListBoundaryCallback extends PagedList.BoundaryCallback<User> i
 
 
     @Override
-    public void onSuccess(List<User> items) {
-        localCache.insert(items, () -> {
+    public void onSuccess(List<User> users) {
+
+        List<User> timeStamped = new ArrayList<>();
+
+        for(User user : users){
+            user.setLastRefresh(new Date());
+            timeStamped.add(user);
+        }
+
+        localCache.insert(users, () -> {
             lastRequestedPage++;
             isRequestInProgress = false;
         });

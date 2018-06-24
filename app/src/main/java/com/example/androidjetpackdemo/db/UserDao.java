@@ -8,6 +8,7 @@ import android.arch.persistence.room.Query;
 
 import com.example.androidjetpackdemo.model.User;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -17,6 +18,12 @@ public interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<User> users);
 
+    @Query("DELETE FROM users")
+    void deleteAll();
+
     @Query("SELECT * FROM users ORDER BY id ASC")
     DataSource.Factory<Integer, User> getAllUsers();
+
+    @Query("SELECT * FROM users WHERE last_refresh < :lastRefreshMax")
+    List<User> getOutdatedUsers(Date lastRefreshMax);
 }

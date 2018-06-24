@@ -7,6 +7,8 @@ import android.arch.persistence.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 @Entity(tableName = "users")
 public class User {
 
@@ -25,11 +27,15 @@ public class User {
     @SerializedName("avatar")
     public String avatar;
 
-    public User(Integer id, String firstName, String lastName, String avatar) {
+    @ColumnInfo(name = "last_refresh")
+    private Date lastRefresh;
+
+    public User(Integer id, String firstName, String lastName, String avatar, Date lastRefresh) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.avatar = avatar;
+        this.lastRefresh = lastRefresh;
     }
 
     public Integer getId() {
@@ -62,5 +68,13 @@ public class User {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public Date getLastRefresh() {
+        return lastRefresh;
+    }
+
+    public void setLastRefresh(Date lastRefresh) {
+        this.lastRefresh = lastRefresh;
     }
 }
