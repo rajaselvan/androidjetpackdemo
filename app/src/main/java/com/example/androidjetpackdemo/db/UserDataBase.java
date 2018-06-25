@@ -9,6 +9,11 @@ import android.content.Context;
 import com.example.androidjetpackdemo.model.User;
 import com.example.androidjetpackdemo.utils.DateConverter;
 
+/**
+ * Database schema that holds the list of users.
+ *
+ * @author Rajaselvan
+ */
 @Database(entities = {User.class}, version = 1)
 @TypeConverters(DateConverter.class)
 public abstract class UserDataBase extends RoomDatabase {

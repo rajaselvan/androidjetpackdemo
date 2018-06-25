@@ -13,6 +13,14 @@ import com.example.androidjetpackdemo.R;
 import com.example.androidjetpackdemo.databinding.ListItemBinding;
 import com.example.androidjetpackdemo.model.User;
 
+/**
+ * This class presents paged data from PagedLists in a RecyclerView.
+ * It listens to PagedList loading callbacks as pages are loaded and
+ * uses DiffUtil to compute updates as new PagedLists are received.
+ *
+ * @author Rajaselvan
+ *
+ */
 public class UserListAdapter extends PagedListAdapter<User, UserListAdapter.UserViewHolder> {
 
 
@@ -55,14 +63,14 @@ public class UserListAdapter extends PagedListAdapter<User, UserListAdapter.User
         }
 
         void bind(User user) {
-            if (user == null) {
 
+            // Paging sometimes loads empty placeholders with null values. Handle them
+            if (user == null) {
                 mDataBinding.tvFirstName.setText("");
                 mDataBinding.tvLastName.setText("");
                 Glide.with(mDataBinding.getRoot().getContext()).load(mDataBinding.getRoot().getContext().getResources().getDrawable(R.drawable.profile)).into(mDataBinding.ivProfileImage);
 
             } else {
-
                 RequestOptions requestOptions = new RequestOptions();
                 requestOptions.placeholder(mDataBinding.getRoot().getContext().getResources().getDrawable(R.drawable.profile));
                 requestOptions.error(mDataBinding.getRoot().getContext().getResources().getDrawable(R.drawable.profile));

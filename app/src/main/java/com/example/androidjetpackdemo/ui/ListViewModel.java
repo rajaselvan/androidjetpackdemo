@@ -13,14 +13,22 @@ import com.example.androidjetpackdemo.model.GetUsersResult;
 import com.example.androidjetpackdemo.model.User;
 import com.example.androidjetpackdemo.repository.UserRepository;
 
+/**
+ *  This class holds the data for our ListFragment.
+ *
+ * @author Rajaselvan
+ */
 public class ListViewModel extends ViewModel implements LifecycleObserver {
 
     private UserRepository mUserRepository;
     private MutableLiveData<GetUsersResult> mUsersResult = new MutableLiveData<>();
 
+    //Extract PagedList data
     private LiveData<PagedList<User>> users = Transformations.switchMap(mUsersResult,
             GetUsersResult::getData
     );
+
+    //Extract network status data
     private LiveData<String> networkErrors = Transformations.switchMap(mUsersResult,
             GetUsersResult::getNetworkErrors
     );
@@ -37,6 +45,7 @@ public class ListViewModel extends ViewModel implements LifecycleObserver {
         return networkErrors;
     }
 
+    //Load users only when the Activity is visible to the user.
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     public void loadUsers(){
        mUsersResult.postValue(mUserRepository.getUsers());

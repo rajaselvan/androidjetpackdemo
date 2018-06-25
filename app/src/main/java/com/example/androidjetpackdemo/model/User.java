@@ -9,6 +9,11 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
+/**
+ * This class defines the Room users table as well as the Response model for our API
+ *
+ * @author Rajaselvan
+ */
 @Entity(tableName = "users")
 public class User {
 

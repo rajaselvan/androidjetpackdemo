@@ -5,7 +5,6 @@ import android.arch.paging.DataSource;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 
-
 import com.example.androidjetpackdemo.api.Webservice;
 import com.example.androidjetpackdemo.db.UserLocalCache;
 import com.example.androidjetpackdemo.model.GetUsersResult;
@@ -16,6 +15,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Executor;
 
+/**
+ * Repository class that works with local and remote data sources.
+ *
+ * @author Rajaselvan
+ */
 
 public class UserRepository {
 
@@ -24,6 +28,7 @@ public class UserRepository {
     private UserLocalCache localCache;
     private Executor executor;
     private static int REFRESH_TIMEOUT_IN_MINUTES = 2;
+    private UserListBoundaryCallback boundaryCallback;
 
 
     public UserRepository(Webservice webservice, UserLocalCache localCache, Executor executor) {
@@ -37,26 +42,32 @@ public class UserRepository {
 
         DataSource.Factory<Integer, User> usersList = localCache.getUsers();
 
-        UserListBoundaryCallback boundaryCallback = new UserListBoundaryCallback(webservice, localCache);
+        boundaryCallback = new UserListBoundaryCallback(webservice, localCache);
 
         LiveData<String> networkErrors = boundaryCallback.getNetworkErrors();
 
+        // Create paged list
         PagedList.Config pagedConfig = new PagedList.Config.Builder()
                 .setPageSize(DATABASE_PAGE_SIZE)
                 .build();
 
+        // Add boundary callback
         LiveData<PagedList<User>> data = new LivePagedListBuilder<>(usersList, pagedConfig)
                 .setBoundaryCallback(boundaryCallback)
                 .build();
 
+        // Check parallelly if we need to refresh data
         refreshUsers();
 
         return new GetUsersResult(data, networkErrors);
     }
 
+
     private void refreshUsers() {
         executor.execute(() -> {
-            boolean needsRefresh = localCache.getOutdatedUsers(getRefreshTimeOut(new Date())).size() > 0 ;
+            // Clear the local cache if the users are old.
+            // Paging library automatically reloads new data from API into database
+            boolean needsRefresh = localCache.hasOutdatedUsers(getRefreshTimeOut(new Date())) !=null ;
             if(needsRefresh) {
                 if(NetworkUtils.isOnline()){
                     localCache.clearCache();

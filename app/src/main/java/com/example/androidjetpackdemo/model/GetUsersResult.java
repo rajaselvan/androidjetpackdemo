@@ -3,6 +3,11 @@ package com.example.androidjetpackdemo.model;
 import android.arch.lifecycle.LiveData;
 import android.arch.paging.PagedList;
 
+/**
+ * This class contains LiveData for both our data and network status
+ *
+ * @author Rajaselvan
+ */
 public class GetUsersResult {
 
     private final LiveData<PagedList<User>> data;

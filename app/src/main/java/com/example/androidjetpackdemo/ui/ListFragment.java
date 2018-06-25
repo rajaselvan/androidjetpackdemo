@@ -17,7 +17,11 @@ import com.example.androidjetpackdemo.Injection;
 import com.example.androidjetpackdemo.R;
 import com.example.androidjetpackdemo.databinding.ListFragmentBinding;
 
-
+/**
+ *  This class displays our list of users.
+ *
+ * @author Rajaselvan
+ */
 public class ListFragment extends Fragment {
 
     private ListViewModel mViewModel;
@@ -66,6 +70,7 @@ public class ListFragment extends Fragment {
 
         mDataBinding.rvUsers.setAdapter(mUserListAdapter);
 
+        //Subscribe to LiveData changes
         mViewModel.getUsers().observe(this, users -> {
             if (users != null) {
                 showEmptyList(users.size() == 0);
@@ -74,7 +79,7 @@ public class ListFragment extends Fragment {
         });
 
         mViewModel.getNetworkErrors().observe(this, errorMsg -> {
-            Snackbar.make(getView(), errorMsg, Snackbar.LENGTH_SHORT);
+            Snackbar.make(mDataBinding.getRoot(), errorMsg, Snackbar.LENGTH_SHORT);
         });
     }
 

@@ -5,6 +5,11 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/**
+ * Sample User API response model.
+ *
+ * @author Rajaselvan
+ */
 public class GetUsersListResponse {
 
     @SerializedName("page")

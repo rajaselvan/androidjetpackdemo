@@ -15,6 +15,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * This class is used to signal when a PagedList has reached the end of available data.
+ *
+ * @author Rajaselvan
+ */
 public class UserListBoundaryCallback extends PagedList.BoundaryCallback<User> implements ApiCallback {
 
     private Webservice webservice;
@@ -44,12 +49,14 @@ public class UserListBoundaryCallback extends PagedList.BoundaryCallback<User> i
 
     @Override
     public void onZeroItemsLoaded() {
+        // Fetch next page from API when there is no data
         requestAndSaveData();
     }
 
 
     @Override
     public void onItemAtEndLoaded(@NonNull User itemAtEnd) {
+        // Fetch next page from API when it is the end of the list
         requestAndSaveData();
     }
 
@@ -57,6 +64,7 @@ public class UserListBoundaryCallback extends PagedList.BoundaryCallback<User> i
     @Override
     public void onSuccess(List<User> users) {
 
+        // Add insert timestamp for refreshing our users
         List<User> timeStamped = new ArrayList<>();
 
         for(User user : users){

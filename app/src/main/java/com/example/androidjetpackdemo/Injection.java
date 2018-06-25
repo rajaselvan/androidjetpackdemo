@@ -11,17 +11,22 @@ import com.example.androidjetpackdemo.ui.ViewModelFactory;
 
 import java.util.concurrent.Executors;
 
+/**
+ * This class handles object creation.
+ *
+ * @author Rajaselvan
+ */
 public class Injection {
 
     @NonNull
-    private static UserLocalCache provideCache(Context context) {
+    public static UserLocalCache provideCache(Context context) {
         UserDataBase userDatabase = UserDataBase.getInstance(context);
         return new UserLocalCache(userDatabase.userDao(), Executors.newSingleThreadExecutor());
     }
 
 
     @NonNull
-    private static UserRepository provideWebSeriveClient(Context context) {
+    public static UserRepository provideWebSeriveClient(Context context) {
         return new UserRepository(WebserviceClient.create(), provideCache(context), Executors.newSingleThreadExecutor());
     }
 

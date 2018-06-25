@@ -20,6 +20,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Retrofit Client class that makes API Calls
+ *
+ * @author Rajaselvan
+ */
+
 public class WebserviceClient {
 
     private static final String BASE_URL = "https://reqres.in/api/";
@@ -42,7 +48,7 @@ public class WebserviceClient {
     }
 
     public static void fetchUsers(Webservice service, int page, final ApiCallback apiCallback) {
-        if(NetworkUtils.isOnline()){
+        if (NetworkUtils.isOnline()) {
             service.getUsers(page).enqueue(new Callback<GetUsersListResponse>() {
                 @Override
                 public void onResponse(@Nullable Call<GetUsersListResponse> call, @NonNull Response<GetUsersListResponse> response) {
@@ -53,11 +59,15 @@ public class WebserviceClient {
                         } else {
                             users = new ArrayList<>();
                         }
-                        apiCallback.onSuccess(users);
+                        if (null != apiCallback) {
+                            apiCallback.onSuccess(users);
+                        }
                     } else {
                         try {
-                            apiCallback.onError(response.errorBody() != null ?
-                                    response.errorBody().string() : "Unknown error");
+                            if (null != apiCallback) {
+                                apiCallback.onError(response.errorBody() != null ?
+                                        response.errorBody().string() : "Unknown error");
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -66,8 +76,10 @@ public class WebserviceClient {
 
                 @Override
                 public void onFailure(@Nullable Call<GetUsersListResponse> call, @NonNull Throwable t) {
-                    apiCallback.onError(t.getMessage() != null ?
-                            t.getMessage() : "Unknown error");
+                    if (null != apiCallback) {
+                        apiCallback.onError(t.getMessage() != null ?
+                                t.getMessage() : "Unknown error");
+                    }
                 }
             });
         } else {

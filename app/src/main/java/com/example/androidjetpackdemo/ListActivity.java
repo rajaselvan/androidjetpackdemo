@@ -5,6 +5,11 @@ import android.os.Bundle;
 
 import com.example.androidjetpackdemo.ui.ListFragment;
 
+/**
+ *  This class is our launcher activity.
+ *
+ * @author Rajaselvan
+ */
 public class ListActivity extends AppCompatActivity {
 
     @Override

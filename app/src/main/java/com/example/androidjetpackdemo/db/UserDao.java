@@ -12,7 +12,11 @@ import java.util.Date;
 import java.util.List;
 
 
-
+/**
+ * Room data access object for accessing users table.
+ *
+ * @author Rajaselvan
+ */
 @Dao
 public interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -24,6 +28,6 @@ public interface UserDao {
     @Query("SELECT * FROM users ORDER BY id ASC")
     DataSource.Factory<Integer, User> getAllUsers();
 
-    @Query("SELECT * FROM users WHERE last_refresh < :lastRefreshMax")
-    List<User> getOutdatedUsers(Date lastRefreshMax);
+    @Query("SELECT * FROM users WHERE last_refresh < :lastRefreshMax LIMIT 1" )
+    User hasOutdatedUsers(Date lastRefreshMax);
 }

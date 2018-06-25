@@ -8,6 +8,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
 
+/**
+ * This class handles all our database operations.
+ *
+ * @author Rajaselvan
+ */
 public class UserLocalCache {
 
     private UserDao mUserDao;
@@ -23,7 +28,9 @@ public class UserLocalCache {
     public void insert(List<User> users, InsertCallback callback) {
         ioExecutor.execute(() -> {
             mUserDao.insertAll(users);
-            callback.insertFinished();
+            if (null != callback) {
+                callback.insertFinished();
+            }
         });
     }
 
@@ -32,12 +39,12 @@ public class UserLocalCache {
         return mUserDao.getAllUsers();
     }
 
-    public List<User> getOutdatedUsers(Date lastRefreshMax){
-        return mUserDao.getOutdatedUsers(lastRefreshMax);
+    public User hasOutdatedUsers(Date lastRefreshMax) {
+        return mUserDao.hasOutdatedUsers(lastRefreshMax);
     }
 
-    public void clearCache(){
-        ioExecutor.execute( () -> {
+    public void clearCache() {
+        ioExecutor.execute(() -> {
             mUserDao.deleteAll();
         });
     }
